@@ -12,5 +12,8 @@ urlpatterns=[
     path("users/accounts/signin",views.SignInView.as_view(),name="signin"),
     path("users/accounts/signout",views.signout_view,name="signout"),
     path("users/accounts/changepassword",views.ChangepassView.as_view(),name="changepass"),
-    path("users/accounts/passreset",views.PassresetView.as_view(),name="pass-reset")
+    path("users/accounts/passreset",views.PassresetView.as_view(),name="pass-reset"),
+    path("profile/add",views.CompanyProfileView.as_view(),name="emp-addprofile"),
+    path("profile/detail",views.EmpViewProfile.as_view(),name="emp-viewprofile"),
+    path("profile/editprofile/<int:id>",views.EmpProfEnditView.as_view(),name="emp-editprofile")
 ]

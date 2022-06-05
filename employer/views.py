@@ -2,8 +2,8 @@ from django.shortcuts import render,redirect
 from django.urls import reverse_lazy
 from django.views.generic import View,ListView,CreateView,DetailView,UpdateView,DeleteView,FormView,TemplateView
 from employer.forms import JobForm
-from employer.models import Jobs
-from employer.forms import SignUpForm,LoginForm
+from employer.models import Jobs,CompanyProfile
+from employer.forms import SignUpForm,LoginForm,CompanyProfileForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 
@@ -137,4 +137,33 @@ class PassresetView(TemplateView):
 
 
 
+class CompanyProfileView(CreateView):
+    model = CompanyProfile
+    form_class = CompanyProfileForm
+    template_name = "emp-addprofile.html"
+    success_url = reverse_lazy('emp')
 
+    def form_valid(self, form):
+        form.instance.user=self.request.user
+        return super().form_valid(form)
+
+    # def post(self, request, *args, **kwargs):
+    #     form=CompanyProfileForm(request.POST,files=request.FILES)
+    #     if form.is_valid():
+    #         form.instance.user=request.user
+    #         form.save()
+    #         return redirect("emp")
+    #     else:
+    #         return render(request,self.template_name,{"form":form})
+
+
+class EmpViewProfile(TemplateView):
+    template_name = 'emp-viewprofile.html'
+
+
+class EmpProfEnditView(UpdateView):
+    model = CompanyProfile
+    form_class = CompanyProfileForm
+    template_name = "emp-editprof.html"
+    success_url = reverse_lazy("emp-viewprofile")
+    pk_url_kwarg = "id"

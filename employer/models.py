@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -12,7 +13,15 @@ class Jobs(models.Model):
     def __str__(self):
         return self.job_title
 
+class CompanyProfile(models.Model):
+    company_name=models.CharField(max_length=130)
+    user=models.OneToOneField(User,on_delete=models.CASCADE,related_name="employer")
+    logo=models.ImageField(upload_to="companyprofile",null=True)
+    location=models.CharField(max_length=120)
+    services=models.CharField(max_length=120)
+    description=models.CharField(max_length=300)
 
+#on delete cascade means if u delete the user it will delete the prof also
 #orm for creating a new job obj
 
 #from employer.models import Jobs

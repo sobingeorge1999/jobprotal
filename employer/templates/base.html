@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Simple Sidebar - Start Bootstrap Template</title>
+        <title>Jobportal 2022</title>
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="{%static 'assets/favicon.ico'%}" />
         <!-- Core theme CSS (includes Bootstrap)-->
@@ -41,7 +41,11 @@
                                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{request.user}}</a>
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                         <a class="dropdown-item" href="{%url 'changepass'%}">ChangePassword</a>
-                                        <a class="dropdown-item" href="#!">Another action</a>
+                                        {%if request.user.employer %}
+                                        <a class="dropdown-item" href="{%url 'emp-viewprofile'%}">View profile</a>
+                                        {%else%}
+                                        <a class="dropdown-item" href="{%url 'emp-addprofile'%}">Add profile</a>
+                                        {%endif%}
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="{%url 'signout'%}">logout</a>
                                     </div>
