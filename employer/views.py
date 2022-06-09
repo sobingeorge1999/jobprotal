@@ -4,9 +4,9 @@ from django.views.generic import View,ListView,CreateView,DetailView,UpdateView,
 from employer.forms import JobForm
 from employer.models import Jobs,CompanyProfile
 from employer.forms import SignUpForm,LoginForm,CompanyProfileForm
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
-
+from employer.models import User
 
 
 # Create your views here.
@@ -20,6 +20,10 @@ class AddJobView(CreateView):
     form_class = JobForm
     template_name = "emp_addjob.html"
     success_url = reverse_lazy("list-alljob")
+
+    def form_valid(self, form):
+        form.instance.company=self.request.user
+        return super().form_valid(form)
     # def get(self,request):
     #     form=JobForm()
     #     return render(request,"emp_addjob.html",{"form":form})
@@ -35,8 +39,10 @@ class ListJobView(ListView):
     model = Jobs
     context_object_name = "jobs"
     template_name = "emp-listjob.html"
+    def get_queryset(self):
+        return Jobs.objects.filter(company=self.request.user)
     # def get(self,request):
-    #     qs=Jobs.objects.all()
+    #     qs=Jobs.objects.filter(company=request.user)
     #     return render(request,"emp-listjob.html",{"jobs":qs})
 
 class JobDetailView(DetailView):
@@ -84,8 +90,8 @@ class JobDeleteView(DeleteView):
 class SignUpView(CreateView):
     model = User
     form_class = SignUpForm
-    template_name = "usersignup.html"
-    success_url = reverse_lazy("list-alljob")
+    template_name = "signup.html"
+    success_url = reverse_lazy("signin")
 
 class SignInView(FormView):
     form_class = LoginForm
@@ -99,9 +105,10 @@ class SignInView(FormView):
             user=authenticate(request,username=usname,password=psw)
         if user:
             login(request,user)
-            return redirect("emp")
-        else:
-            return render(request,"login.html",{"form":form})
+            if request.user.role=="employer":
+                return redirect("emp")
+            elif request.user.role=="candidate":
+                return redirect("cand-home")
 
 def signout_view(request, *args, **kwargs):
     logout(request)
@@ -167,3 +174,6 @@ class EmpProfEnditView(UpdateView):
     template_name = "emp-editprof.html"
     success_url = reverse_lazy("emp-viewprofile")
     pk_url_kwarg = "id"
+
+
+#base for candidate,reg,login
