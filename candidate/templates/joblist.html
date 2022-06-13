@@ -1,0 +1,32 @@
+{%extends 'candbase.html'%}
+{%load static%}
+{%block body_block%}
+<div class="row">
+    {%for job in jobs%}
+<div class="row">
+    <div class="col-4"></div>
+    <div class="col-4">
+        <div class="card" style="width: 18rem;">
+  <img src="{{job.company.employer.logo.url}}" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">{{job.job_title}}</h5>
+    <p class="card-text">jvjvjv jvjvj</p>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">location:{{job.location}}</li>
+    <li class="list-group-item">salary:{{job.salary}}</li>
+    <li class="list-group-item"><a href="" class="btn btn-danger">
+    </a>
+      </li>
+  </ul>
+  <div class="card-body">
+    <a href="{%url 'cand-detailjob' job.id%}" class="btn btn-success">View more</a>
+  </div>
+</div>
+    </div>
+</div>
+{%endfor%}
+
+</div>
+
+{%endblock%}

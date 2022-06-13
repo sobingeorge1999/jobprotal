@@ -9,3 +9,7 @@ class CandidateProfile(models.Model):
     qualification=models.CharField(max_length=120)
     skills=models.CharField(max_length=120)
     exp=models.PositiveIntegerField(default=0)
+
+
+
+

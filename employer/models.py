@@ -37,6 +37,25 @@ class CompanyProfile(models.Model):
     services=models.CharField(max_length=120)
     description=models.CharField(max_length=300)
 
+
+class Application(models.Model):
+    applicant=models.ForeignKey(User,on_delete=models.CASCADE,related_name="applicant")
+    job=models.ForeignKey(Jobs,on_delete=models.CASCADE)
+    options=(
+        ("applied","applied"),
+        ("accepted","accepted"),
+        ("rejected","rejected"),
+        ("pendind","pending"),
+        ("cancelled","cancelled")
+    )
+    status=models.CharField(max_length=120,choices=options,default="applied")
+    date=models.DateTimeField(auto_now_add=True)
+
+
+
+
+
+
 #on delete cascade means if u delete the user it will delete the prof also
 #orm for creating a new job obj
 
