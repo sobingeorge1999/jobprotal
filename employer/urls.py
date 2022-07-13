@@ -15,5 +15,10 @@ urlpatterns=[
     path("users/accounts/passreset",views.PassresetView.as_view(),name="pass-reset"),
     path("profile/add",views.CompanyProfileView.as_view(),name="emp-addprofile"),
     path("profile/detail",views.EmpViewProfile.as_view(),name="emp-viewprofile"),
-    path("profile/editprofile/<int:id>",views.EmpProfEnditView.as_view(),name="emp-editprofile")
+    path("profile/editprofile/<int:id>",views.EmpProfEnditView.as_view(),name="emp-editprofile"),
+    path("application/all/<int:id>",views.EmpListApplicationView.as_view(),name="emp-applist"),
+    path("applications/detail/<int:id>",views.EmployerApplicationDetailView.as_view(),name="emp-appldetail"),
+    path("applications/status/change<int:id>",views.reject_application,name="rejectapplication"),
+    path("application/accept/<int:app_id>",views.accept_application,name="accept-application")
+
 ]

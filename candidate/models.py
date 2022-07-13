@@ -13,3 +13,5 @@ class CandidateProfile(models.Model):
 
 
 
+
+

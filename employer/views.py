@@ -6,15 +6,21 @@ from employer.models import Jobs,CompanyProfile
 from employer.forms import SignUpForm,LoginForm,CompanyProfileForm
 # from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
-from employer.models import User
+from employer.models import User,Application
+from django.contrib import messages
+from django.utils.decorators import method_decorator
+from employer.decorators import sign_required
+from django.core.mail import send_mail
 
 
 # Create your views here.
-
+@method_decorator(sign_required,name='dispatch')
 class EmployerHomeView(View):
-    def get(self,request):
+    def get(self,request,*args,**kwargs):
         return render(request,'emp_home.html')
 
+
+@method_decorator(sign_required,name='dispatch')
 class AddJobView(CreateView):
     model = Jobs
     form_class = JobForm
@@ -35,6 +41,7 @@ class AddJobView(CreateView):
     #     else:
     #         return render(request,"emp_addjob.html",{"form":form})
 
+@method_decorator(sign_required,name='dispatch')
 class ListJobView(ListView):
     model = Jobs
     context_object_name = "jobs"
@@ -45,6 +52,7 @@ class ListJobView(ListView):
     #     qs=Jobs.objects.filter(company=request.user)
     #     return render(request,"emp-listjob.html",{"jobs":qs})
 
+@method_decorator(sign_required,name='dispatch')
 class JobDetailView(DetailView):
     model = Jobs
     context_object_name = "jobs"
@@ -54,6 +62,7 @@ class JobDetailView(DetailView):
     #     qs=Jobs.objects.get(id=id)
     #     return render(request,"emp-detailjob.html",{"jobs":qs})
 
+@method_decorator(sign_required,name='dispatch')
 class JobEditView(UpdateView):
     model = Jobs
     form_class = JobForm
@@ -74,7 +83,7 @@ class JobEditView(UpdateView):
     #     else:
     #         return render(request,"emp-editjob.html",{"form":form})
 
-
+@method_decorator(sign_required,name='dispatch')
 class JobDeleteView(DeleteView):
     template_name = "jobconfirmdelete.html"
     model = Jobs
@@ -110,11 +119,12 @@ class SignInView(FormView):
             elif request.user.role=="candidate":
                 return redirect("cand-home")
 
+@sign_required
 def signout_view(request, *args, **kwargs):
     logout(request)
     return redirect("signin")
 
-
+@method_decorator(sign_required,name='dispatch')
 class ChangepassView(TemplateView):
     template_name = "changepass.html"
 
@@ -127,7 +137,7 @@ class ChangepassView(TemplateView):
         else:
             return render(request,self.template_name)
 
-
+@method_decorator(sign_required,name='dispatch')
 class PassresetView(TemplateView):
     template_name = "passreset.html"
 
@@ -143,7 +153,7 @@ class PassresetView(TemplateView):
             return redirect("signin")
 
 
-
+@method_decorator(sign_required,name='dispatch')
 class CompanyProfileView(CreateView):
     model = CompanyProfile
     form_class = CompanyProfileForm
@@ -163,11 +173,11 @@ class CompanyProfileView(CreateView):
     #     else:
     #         return render(request,self.template_name,{"form":form})
 
-
+@method_decorator(sign_required,name='dispatch')
 class EmpViewProfile(TemplateView):
     template_name = 'emp-viewprofile.html'
 
-
+@method_decorator(sign_required,name='dispatch')
 class EmpProfEnditView(UpdateView):
     model = CompanyProfile
     form_class = CompanyProfileForm
@@ -175,5 +185,51 @@ class EmpProfEnditView(UpdateView):
     success_url = reverse_lazy("emp-viewprofile")
     pk_url_kwarg = "id"
 
+@method_decorator(sign_required,name='dispatch')
+class EmpListApplicationView(ListView):
+    model = Application
+    context_object_name = "applications"
+    template_name = "emp-applist.html"
 
-#base for candidate,reg,login
+    def get_queryset(self):
+        return Application.objects.filter(job=self.kwargs.get("id"),status="applied")
+
+@method_decorator(sign_required,name='dispatch')
+class EmployerApplicationDetailView(DetailView):
+    model = Application
+    context_object_name = "applications"
+    template_name = "emp-appdetil.html"
+    pk_url_kwarg = "id"
+
+
+@sign_required
+def reject_application(request,*args,**kwargs):
+    app_id=kwargs.get("id")
+    application=Application.objects.get(id=app_id)
+    application.status="rejected"
+    application.save()
+    messages.success(request,"application rejected")
+    return redirect("emp")
+
+
+
+
+# base for candidate,reg,login
+
+def accept_application(request,*args,**kwargs):
+    if request.method=="POST":
+        app_id=kwargs.get('app_id')
+        application=Application.objects.get(id=app_id)
+        application.status="accepted"
+        application.save()
+        subject=request.POST.get("subject")
+        mess=request.POST.get("message")    # name given in templ
+        email=request.POST.get("email")
+        send_mail(
+            subject,
+            mess,
+            'sobinthoomkuzhy1999@gmail.com',
+            [email],
+            fail_silently=False,
+        )
+        return redirect("emp")

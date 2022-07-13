@@ -1,0 +1,38 @@
+{%extends 'candbase.html'%}
+{%block body_block%}
+
+
+{%for application in applications%}
+
+
+<div class=" container row border mb-3 mt-5">
+    <div class="col-4">
+        <div>Job Title :{{application.job.job_title}}</div>
+        <div>
+            companyName:  {{application.job.company}}
+        </div>
+        <div>
+            salary:  {{application.job.salary}}
+        </div>
+        <div>
+            Exp:{{application.job.experience}}
+        </div>
+    </div>
+    <div class="col-4 mt-4">
+          {{application.status}}
+        {{application.date}}
+
+    </div>
+    <div class="col-4 mt-3">
+         <a href="{%url 'cand-cancellappli' application.id%}" class="btn btn-outline-danger">
+             cancellApplication
+         </a>
+    </div>
+
+
+</div>
+{%endfor%}
+{%endblock%}
+
+
+

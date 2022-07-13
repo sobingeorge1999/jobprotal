@@ -1,0 +1,53 @@
+{%extends 'base.html'%}
+{%block body_block%}
+<div class="card" style="width: 18rem;">
+  <img src="{{applications.applicant.candidate.prof_pic.url}}" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">{{applications.applicant}}</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">Qualification : {{applications.applicant.candidate.qualification}}</li>
+    <li class="list-group-item">{{applications.applicant.candidate.skills}}</li>
+    <li class="list-group-item"><a href="{{applications.applicant.candidate.resume.url}}">view Resume</a> </li>
+  </ul>
+  <div class="card-body">
+<!--    <a href="" class="btn btn-success">Accept</a>-->
+    <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Accept
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{%url 'accept-application' applications.id%}" method="post">
+          {%csrf_token%}
+          <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Subject" name="subject">
+          </div>
+          <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Message" name="message">
+          </div>
+          <div class="mb-3">
+            <input type="email" class="form-control" placeholder="Email" name="email">
+          </div>
+          <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Send mail</button>
+      </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+    <a href="{%url 'rejectapplication' applications.id %}" class="btn btn-danger">Reject</a>
+  </div>
+</div>
+{%endblock%}

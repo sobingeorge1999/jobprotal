@@ -7,6 +7,7 @@ urlpatterns=[
     path('profile/change',views.CandidateprofEditView.as_view(),name='cand-profedit'),
     path('jobs/list',views.CandidateJobListView.as_view(),name='cand-listjob'),
     path('jobs/details/<int:id>',views.CandidateJobDetailView.as_view(),name='cand-detailjob'),
-    path("jobs/apply-now/<int:id>",views.apply_now,name="apply-now")
-
+    path("jobs/apply-now/<int:id>",views.apply_now,name="apply-now"),
+    path("applications/all",views.ApplicationListView.as_view(),name="cand-application"),
+    path("application/remove/<int:id>",views.cancellApplication,name="cand-cancellappli")
 ]
